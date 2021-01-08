@@ -1,5 +1,5 @@
 import React from 'react'
-import Ship from './Ship'
+import Ship from '../factories/Ship'
 
 //Gameboard places ships at specific points using Ship factory function
 //Keep track of misses to display properly
