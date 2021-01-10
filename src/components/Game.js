@@ -31,8 +31,6 @@ const Game = () => {
     placesOne.forEach(e => humanBoard.place(e))
     placesTwo.forEach(e => computerBoard.place(e))
 
-    human.turnEvent(human)
-
     const turnEvent = (player) => {
         if ( turn === true ) {
             // playerChoose()
