@@ -1,7 +1,7 @@
 // Ship - length, where it has been hit, if it has been sunk
 // Ships are premade 
 // need positions to check hits and where it is?
-const Ship = ( length, id, title ) => {
+const Ship = (length, id, title) => {
   let hitLocation = []
   let location = []
 

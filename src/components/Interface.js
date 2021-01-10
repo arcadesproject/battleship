@@ -1,7 +1,7 @@
 import React from 'react'
 
 //DOM module
-const Interaction = () => {
+const Interface = () => {
 
     return (
         <div>
@@ -10,4 +10,4 @@ const Interaction = () => {
     )
 }
 
-export default Interaction
+export default Interface

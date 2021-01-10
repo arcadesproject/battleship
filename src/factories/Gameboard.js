@@ -11,7 +11,7 @@ const Gameboard = () => {
     let missedPositions = []
     let ships = []
 
-    const place = (ship, square, direction) => {
+    const place = ([ship, square, direction]) => {
         let temp = []
 
         if (direction === 'horizontal') {
