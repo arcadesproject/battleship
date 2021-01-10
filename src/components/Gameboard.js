@@ -6,17 +6,56 @@ import Ship from '../factories/Ship'
 //Report if all Ships of a player have been sunk
 const Gameboard = () => {
 
+    let grid = []
+    for (let i = 0; i < 100; i++) {
+        grid.push(i)
+    }
+    let shipPositions = []
+    let missedPositions = []
+    let ships = []
+
+    const place = (ship, square, direction) => {
+        let temp = []
+
+        if (direction === 'horizontal') {
+            for (let i = 0; i < ship.length; i++) {
+                temp.push(square + i)
+            }
+        } else {
+            for (let i = 0; i < ship.length; i++) {
+                temp.push(square + (i * 10))
+            }
+        }
+
+        if (!temp.some(r => shipPositions.includes(r)) 
+            && temp.every(i => grid.includes(i))) { // && in overall array grid
+            shipPositions.push(...temp)
+            ship.location.push(...temp)
+            ship.direction = direction
+            ships.push(ship)
+        }
+    }
     //receiveAttack takes a pair of co-ordinates and determines if a Ship has been hit
     //if hit then send hit() function to correct ship
     //if miss then record co-ordinates and mark on DOM
-    const receiveAttack = (x, y) => {
-
+    const receiveAttack = (square) => {
+        if ( shipPositions.includes(square)) { // or check directly in ship keys?
+            let boat = ships.find(ship => ship.location.includes(square))
+            boat.hit(square)
+            //need to find which ship is on this coord
+        } else {
+            missedPositions.push(square)
+        }
     }
-    return (
-        <div className="gameBoard">
-            
-        </div>
-    )
+
+    return {
+        shipPositions,
+        missedPositions,
+        place,
+        receiveAttack,
+        ships,
+        grid,
+    }
 }
 
 export default Gameboard
