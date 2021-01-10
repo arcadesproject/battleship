@@ -1,9 +1,6 @@
-import React from 'react'
-import Ship from '../factories/Ship'
-
 //Gameboard places ships at specific points using Ship factory function
 //Keep track of misses to display properly
-//Report if all Ships of a player have been sunk
+//Report if all Ships of a player have been sunk !!!!!!!!!!!!!!!!!!!
 const Gameboard = () => {
 
     let grid = []
@@ -35,6 +32,13 @@ const Gameboard = () => {
             ships.push(ship)
         }
     }
+
+    // not triggering ??? test with players or game logic?
+    const checkSunk = (board) => {   
+        if ( ships.every(ship => ship.sunk === true) )  {
+            board.allSunk = true
+        }
+    }
     //receiveAttack takes a pair of co-ordinates and determines if a Ship has been hit
     //if hit then send hit() function to correct ship
     //if miss then record co-ordinates and mark on DOM
@@ -42,19 +46,23 @@ const Gameboard = () => {
         if ( shipPositions.includes(square)) { // or check directly in ship keys?
             let boat = ships.find(ship => ship.location.includes(square))
             boat.hit(square)
-            //need to find which ship is on this coord
+            boat.isSunk(boat)
         } else {
             missedPositions.push(square)
         }
     }
+
+    
 
     return {
         shipPositions,
         missedPositions,
         place,
         receiveAttack,
+        checkSunk,
         ships,
         grid,
+        allSunk: false,
     }
 }
 
