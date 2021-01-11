@@ -9,9 +9,10 @@ const Game = () => {
     const human = Player('human')
     const humanBoard = Gameboard()
     const computerBoard = Gameboard()
+    let computerHits = []
 
     //Ship(length, id, title), position, direction
-    const placesOne = [ 
+    const placesOne = [ //use state since may change? in component etc
         [Ship(2, 0, 'Patrol Boat'), 1, 'vertical'],
         [Ship(3, 1, 'Submarine'), 62, 'horizontal'],
         [Ship(3, 2, 'Destroyer'), 3, 'vertical'],
@@ -31,22 +32,31 @@ const Game = () => {
     placesOne.forEach(e => humanBoard.place(e))
     placesTwo.forEach(e => computerBoard.place(e))
 
-    const turnEvent = (player) => {
-        if ( turn === true ) {
-            // playerChoose()
-            player.turn = !player.turn
+    const turnEvent = () => {
+        if ( human.turn === true ) {
+            // playerChoose
+            human.turn = !human.turn
         } else {
-            player.computerTurn(player)
-            player.turn = !player.turn
+            human.computerTurn(human)
+            human.turn = !human.turn
         }
     }
 
     //only needs to trigger after every player choice
-    const computerTurn = (player) => {
+    const computerTurn = () => {
         let selection = Math.floor(Math.random() * 100)
-        if (!player.computerHits.includes(selection)) {
-            player.computerHits.push(selection)
+        if (!computerHits.includes(selection)) {
+            computerHits.push(selection)
         }
+    }
+
+    return {
+        human,
+        humanBoard,
+        computerBoard,
+        computerHits,
+        turnEvent,
+        computerTurn,
     }
 
 }

@@ -46,7 +46,6 @@ test('Check receiveAttack hits right boat, missedPositions work etc.', () => {
   board.place([ship3, 3, 'vertical'])
   board.receiveAttack(13)
   board.receiveAttack(23)
-  
   board.receiveAttack(14)
   board.receiveAttack(3)
   expect(ship3.hitLocation).toEqual([13, 23, 3])
@@ -57,7 +56,9 @@ test('Check receiveAttack hits right boat, missedPositions work etc.', () => {
   expect(board.allSunk).toEqual(true)
 })
 
-// test('Check player turn', () => {
-//   const game = Game()
-//   expect(Game.human.computerHits.length).toBe(1)
-// })
+test('Check player turn', () => {
+  const game = Game()
+  game.computerTurn()
+  expect(game.humanBoard.ships.length).toBe(5)
+  expect(game.computerHits.length).toBe(1)
+})

@@ -33,7 +33,6 @@ const Gameboard = () => {
         }
     }
 
-    // not triggering ??? test with players or game logic?
     const checkSunk = (board) => {   
         if ( ships.every(ship => ship.sunk === true) )  {
             board.allSunk = true
