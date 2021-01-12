@@ -1,4 +1,3 @@
-import React from 'react'
 import Player from '../factories/Player'
 import Gameboard from '../factories/Gameboard'
 import Ship from '../factories/Ship'

@@ -9,6 +9,7 @@ const Gameboard = () => {
     }
     let shipPositions = []
     let missedPositions = []
+    let hitPositions = []
     let ships = []
 
     const place = ([ship, square, direction]) => {
@@ -41,14 +42,20 @@ const Gameboard = () => {
     //receiveAttack takes a pair of co-ordinates and determines if a Ship has been hit
     //if hit then send hit() function to correct ship
     //if miss then record co-ordinates and mark on DOM
-    const receiveAttack = (square) => {
+    const receiveAttack = (index) => {
+        const square = index
         if ( shipPositions.includes(square)) { // or check directly in ship keys?
             let boat = ships.find(ship => ship.location.includes(square))
             boat.hit(square)
             boat.isSunk(boat)
+            hitPositions.push(square)
+            console.log(boat)
         } else {
             missedPositions.push(square)
         }
+        console.log(hitPositions)
+        console.log(missedPositions)
+        
     }
 
     
@@ -56,6 +63,7 @@ const Gameboard = () => {
     return {
         shipPositions,
         missedPositions,
+        hitPositions,
         place,
         receiveAttack,
         checkSunk,
