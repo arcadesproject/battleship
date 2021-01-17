@@ -1,63 +1,113 @@
+import React, { useState } from 'react'
 import Player from '../factories/Player'
 import Gameboard from '../factories/Gameboard'
-import Ship from '../factories/Ship'
+import boats from '../shipData'
 
 //Game loop logic, player one, check hit, update, etc. then computer
-const Game = () => {
+const Game = (props) => {
+	
+	let grid = []
+    for (let i = 0; i < 100; i++) {
+        grid.push(i)
+	}
 
-    const human = Player('human')
+    //const human = Player('human')
     const humanBoard = Gameboard()
+    boats.forEach(ship => {
+        return humanBoard.place(ship)
+    })
+
+
+    const computer = Player('computer')
     const computerBoard = Gameboard()
-    let computerHits = []
+    boats.forEach(ship => {
+        return computerBoard.place(ship)
+    })
 
-    //Ship(length, id, title), position, direction
-    const placesOne = [ //use state since may change? in component etc
-        [Ship(2, 0, 'Patrol Boat'), 1, 'vertical'],
-        [Ship(3, 1, 'Submarine'), 62, 'horizontal'],
-        [Ship(3, 2, 'Destroyer'), 3, 'vertical'],
-        [Ship(4, 3, 'Battleship'), 4, 'vertical'],
-        [Ship(5, 4, 'Carrier'), 91, 'horizontal']
-    ]
+    console.log(computerBoard)
 
-    const placesTwo = [
-        [Ship(2, 5, 'Patrol Boat'), 1, 'vertical'],
-        [Ship(3, 6, 'Submarine'), 12, 'vertical'],
-        [Ship(3, 7, 'Destroyer'), 3, 'vertical'],
-        [Ship(4, 8, 'Battleship'), 49, 'vertical'],
-        [Ship(5, 9, 'Carrier'), 91, 'horizontal']
-    ]
-    
-    //put pieces on players board and computer board
-    placesOne.forEach(e => humanBoard.place(e))
-    placesTwo.forEach(e => computerBoard.place(e))
+    return (
+    	<>
+    		<div className="gridContainer">
+		    	{grid.map(square => {
+		    		if (computerBoard.misses.includes(square)) {
+		    			return <div className="missSquare" key={square}></div>
+		    		} else if (computerBoard.ships.some(ship => ship.hits.includes(square))) {
+		    			return <div className="hitSquare" key={square}></div>
+		    		} else { 
+                        return <div className="square"
+                                key={square}
+                                onClick={()=> {
+									computerBoard.receiveAttack(computerBoard, square)
+									computer.computerChoice(humanBoard)
+                                }}
+                                >
 
-    const turnEvent = () => {
-        if ( human.turn === true ) {
-            // playerChoose
-            human.turn = !human.turn
-        } else {
-            human.computerTurn(human)
-            human.turn = !human.turn
-        }
-    }
+                                </div> 
+		    		}
+		    		
+		    	})}
+    		</div>
 
-    //only needs to trigger after every player choice
-    const computerTurn = () => {
-        let selection = Math.floor(Math.random() * 100)
-        if (!computerHits.includes(selection)) {
-            computerHits.push(selection)
-        }
-    }
+    		<div className="gridContainer">
+		    	{grid.map((square, index) => {
+		    		if (humanBoard.misses.includes(square)) {
+		    			return <div className="missSquare" key={square}></div>
+		    		} else if (humanBoard.ships.some(ship => ship.locations.includes(square))) {
+		    			return <div className="shipSquare" key={square}></div>
+		    		} else { 
+		    			return <div className="square" key={square}></div> 
+		    		}
+		    		
+		    	})}
+    		</div>
 
-    return {
-        human,
-        humanBoard,
-        computerBoard,
-        computerHits,
-        turnEvent,
-        computerTurn,
-    }
-
+    	</>
+    )
 }
 
 export default Game
+
+// const Game = ({boatList}) => {
+
+//     const humanBoard = Gameboard()
+//     const computerBoard = Gameboard()
+//     let computerShips = [...boatList]
+    
+
+//     return (
+//         <div>
+//             <h3>Computer</h3>
+//             <div className="gridContainer">
+//                 {computerBoard.grid.map((i, index) => {
+
+//                     if (computerBoard.missedPositions.includes(i)) {
+//                         return <div className="missSquare" key={i}></div>
+//                     }
+//                     else if (computerBoard.hitPositions.includes(i)) {
+//                         return <div className="hitSquare" key={i}></div>
+//                     }
+//                     else { return <div className="square" key={i}
+//                         onClick={() => {
+//                             computerBoard.receiveAttack(index, computerShips)
+//                             computerBoard.checkSunk(computerShips)
+//                             }}></div>
+//                 }})}
+//                 {computerBoard.allSunk === true && 
+//                     <p>Game Over! You sunk all their ships</p>
+//                 }
+//             </div>
+//             <h3>Player</h3>
+//             <div className="gridContainer">
+//                 {humanBoard.grid.map((i, index) => {
+//                     if (humanBoard.shipPositions.includes(i)) {
+//                         return <div className="shipSquare" key={i}></div>
+//                     }
+//                     return <div className="square" key={i}></div>
+//                 })}
+//             </div>
+//         </div>
+//     )
+// }
+
+// export default Game
