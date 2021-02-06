@@ -2,10 +2,9 @@
 //Keep track of misses to display properly
 //Report if all Ships of a player have been sunk 
 import Ship from './Ship'
-const Gameboard = () => {
-    let ships = []
-	let misses = [] // state?
-	let sunk = false
+import { playerBoats, computerBoats } from '../shipData'
+
+const Gameboard = ({title, ships, sunk, hits, misses, message, sunkMessage, gameOverText}) => {
 
 	const place = (ship) => {
 		const { direction, square, length } = ship
@@ -16,103 +15,68 @@ const Gameboard = () => {
 				: temp.push(square + i)
 		}
 		ship.locations = [...temp]
-		ships.push(Ship(ship))
-	}
-	//boats haven't used Ship factory so don't have hitAction
-	const receiveAttack = (board, square) => {
-		if (board.ships.some(boat => boat.locations.includes(square))) {
-            const boat = board.ships.find(ship => ship.locations.includes(square)) // or change state?
-			boat.hitAction(square, boat)
-			boat.isSunk(boat)
-			checkSunk(board)
-		} else {
-			misses.push(square)
-		}
+		ships.push(ship)
 	}
 
-	//Need to check if sunk
+	const receiveAttack = (board, square) => {
+		let boats = board.ships
+		if (boats.some(boat => boat.locations.includes(square))) {
+			let boat = boats.find(ship => ship.locations.includes(square))
+			boat.hitAction(square)
+			boat.isSunk(boat)
+			hits.push(square)
+			checkSunk(board)
+			board.message = `${boat.name} hit!`
+			if (boat.sunk) {
+				board.sunkMessage = `Sunk ${boat.name}!`
+			} else {
+				board.sunkMessage = ``
+			}
+		} else {
+			misses.push(square)
+			board.message = `Miss!`
+			board.sunkMessage = ''
+			console.log(misses)
+		}	
+	}
+
 	const checkSunk = (board) => {   
 		const { ships } = board
 		if ( ships.every(ship => ship.sunk === true) )  {
 			board.sunk = !board.sunk
+			if (board.title === 'computer') {
+				board.gameOverText = 'You Win!'
+			} else {
+				board.gameOverText = 'Computer wins!'
+			}
+			console.log('test')
+			console.log(board)
 		}
-		console.log(board.sunk)
 	}
 
-
-	// useEffect( () => {
-	// 	if (ships.every(boat => boat.sunk === true)) {
-	// 		console.log(ships)
-	// 	}
-	// }, [ships])
+	if (title === 'computer') {
+		computerBoats.forEach(ship => {
+			place(Ship(ship))
+		})
+	} else {
+		playerBoats.forEach(ship => {
+			place(Ship(ship))
+		})
+	}
 
 	return {
+		title,
 		ships,
-		misses,
 		sunk,
+		hits, 
+		misses, 
+		message,
+		sunkMessage,
+		gameOverText,
 		place,
-		receiveAttack
+		receiveAttack,
+		checkSunk,
 	}
 }
 
 export default Gameboard
-
-//     let grid = []
-//     for (let i = 0; i < 100; i++) {
-//         grid.push(i)
-//     }
-
-//     let shipPositions = []
-//     const [missedPositions, setMissedPositions] = useState([])
-//     const [hitPositions, setHitPositions] = useState([])
-//     const [allSunk, setAllSunk] = useState(false)
-    
-//     const place = ({direction, locations, length, square}) => {
-//         if (direction === 'horizontal') {
-//             for(let i = length; i > 0; i--) {
-//               locations.push(square + i)
-//               console.log(locations)
-//             }
-//           } else {
-//             for(let i = 0; i < length; i++) {
-//               locations.push(square + (i*10))
-//             }
-//           }
-//         if (!locations.some(r => shipPositions.includes(r)) 
-//             && locations.every(i => grid.includes(i))) { // && in overall array grid
-//             shipPositions.push(...locations)
-//         }
-//         console.log(shipPositions)
-//         need to work out what to do if can't be placed
-//         take location out of ship factory? recursive function to change coords if not placeable?
-//     }
-
-//     const checkSunk = (ships) => {   
-//         if ( ships.every(ship => ship.sunk === true) )  {
-//             setAllSunk(prevState => !prevState)
-//         }
-//     }
-//     receiveAttack takes a pair of co-ordinates and determines if a Ship has been hit
-//     if hit then send hit() function to correct ship
-//     if miss then record co-ordinates and mark on DOM
-//     const receiveAttack = (i, ships) => {
-//         const square = i
-//         if ( shipPositions.includes(square)) {
-//             const boat = ships.find(ship => ship.locations.includes(square))
-//             boat.hitAction(square, boat)
-//             boat.isSunk(boat)
-//             setHitPositions(
-//                 prevState => [...prevState].concat(square)
-//             )
-//         } else {
-//             setMissedPositions(
-//                 prevState => [...prevState].concat(square)
-//             )
-//         }
-//     }
-
-//     return {
-
-//     }
-// }
-

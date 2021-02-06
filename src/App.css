@@ -2,11 +2,19 @@
   text-align: center;
 }
 
+.container {
+  display: grid;
+  grid-template-columns: .5fr .5fr .5fr;
+}
+
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(10, 30px [col-start]);
   padding-top: 50px;
-  
+}
+
+.updateContainer {
+  padding-top: 50px;;
 }
 
 .square {
@@ -17,15 +25,18 @@
 .shipSquare {
   border: 1px solid black;
   background-color: blue;
+  height: 30px;
 }
 
 .missSquare {
   border: 1px solid black;
   background-color: red;
+  height: 30px;
 }
 
 .hitSquare {
   border: 1px solid black;
   background-color: green;
+  height: 30px;
 }
 

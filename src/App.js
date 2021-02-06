@@ -1,30 +1,26 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './App.css';
-import Ship from './factories/Ship'
 import Game from './components/Game'
-import boats from './shipData'
-import Gameboard from './factories/Gameboard';
+import Player from './factories/Player'
+import Gameboard from './factories/Gameboard'
+import computer from './playerData'
+import { computerBoardData, humanBoardData } from './boardData'
+
 
 const App = () => {
-  // boats.forEach(boat => {
-  //   Ship(boat)
-  // })
-
-  // boats.forEach(boat => {
-  //   Gameboard().place(boat)
-  // })
-  // for (let i = 0; i < boats.length; i++) {
-  //   let boat = boats[i]
-  //   Gameboard().place(boat)
-  // }
-
-  // const [boatArray, setBoats] = useState([...boats])
-
-  // console.log(boats)
+  const humanBoard = Gameboard(humanBoardData)
+	const computerBoard = Gameboard(computerBoardData)
+  const computerPlayer = Player(computer)
+  
+  console.log(humanBoard)
 
   return (
     <div className="App">
-      <Game />
+      <Game 
+        humanBoard={humanBoard}
+        computerBoard={computerBoard}
+        computerPlayer={computerPlayer}
+      />
     </div>
   );
 }

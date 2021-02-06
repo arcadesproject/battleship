@@ -2,63 +2,89 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 import Ship from './factories/Ship'
 import Gameboard from './factories/Gameboard'
+import { computerBoardData, humanBoardData } from './boardData'
 import Player from './factories/Player'
+import computer from './playerData'
 import Game from './components/Game'
+import { playerBoats, computerBoats } from './shipData'
 
-// test('renders learn react link', () => {
-//   render(<App />);
-//   const linkElement = screen.getByText(/learn react/i);
-//   expect(linkElement).toBeInTheDocument();
-// });
+const newShip = Ship(playerBoats[1])
+const newShip2 = Ship(computerBoats[1])
+const newShip3 = Ship(playerBoats[2])
+const newShip4 = Ship(computerBoats[2])
 
-test('Check hit and isSunk functions work', () => {
-  const newShip = Ship(4, 3, 'Battleship')
-  newShip.hit(4)
-  newShip.hit(5)
-  newShip.hit(6)
-  newShip.hit(7)
-  newShip.isSunk(newShip)
-  expect(newShip).toEqual( {
-    id: 3,
-    length: 4,
-    title: 'Battleship',
-    location: [],
-    hitLocation: [4, 5, 6, 7],
-    sunk: true,
-    hit: expect.any(Function),
-    isSunk: expect.any(Function)
+describe('Testing ship factory', () => {
+  
+  newShip.hitAction(4)
+  newShip.hitAction(5)
+  newShip.hitAction(6)
+  newShip.isSunk()
+  newShip2.hitAction(3)
+  newShip2.hitAction(13)
+  newShip2.hitAction(23)
+  
+  test('check hitAction', () => {
+    expect(newShip.hits).toEqual([4, 5, 6])
   })
+
+  test('check second ship hits', () => {
+    expect(newShip2.hits).toEqual([3, 13, 23])
+  }) 
+
+  test('Check isSunk', () => {
+    expect(newShip.sunk).toBe(true)
+  })
+
+
 })
 
-test('Adding a ship to Gameboard, ship will not add if ship already there', () => {
-  const board = Gameboard()
-  const ship2 = Ship(3, 2, 'Destroyer')
-  board.place([ship2, 2, 'vertical']) 
-  expect(board.shipPositions).toEqual( [2, 12, 22])
-  expect(ship2.location).toEqual( [2, 12, 22])
-  expect(ship2.direction).toEqual('vertical')
-  expect(board.ships).toEqual([ship2])
+describe('Gameboard tests', () => {
+  const newGameBoard = Gameboard(humanBoardData)
+  const newGameBoard2 = Gameboard(computerBoardData)
+  newGameBoard.place(newShip3)
+  newGameBoard2.place(newShip4)
+  newGameBoard.receiveAttack(newGameBoard, 0)
+  newGameBoard.receiveAttack(newGameBoard, 10)
+  newGameBoard.receiveAttack(newGameBoard, 3)
+  newGameBoard.receiveAttack(newGameBoard, 13)
+  newGameBoard.receiveAttack(newGameBoard, 23)
+  newGameBoard2.receiveAttack(newGameBoard2, 0)
+  newGameBoard2.receiveAttack(newGameBoard2, 3)
+  newGameBoard.checkSunk(newGameBoard)
+
+
+  test('Ship places on board properly', () => {
+    expect(newShip3.locations).toEqual ([3, 13, 23])
+  })
+
+  test('Gameboard has ships', () => {
+    expect(newGameBoard.ships.length).toBe(1)
+  })
+  
+  test('Receive attack, track misses', () => {
+    expect(newGameBoard.misses).toEqual([0, 10])
+    expect(newGameBoard2.misses).toEqual([0])
+  })
+
+  test('Right ship hit', () => {
+    expect(newShip3.hits).toEqual([3, 13, 23])
+    expect(newShip4.hits).toEqual([3])
+  })
+
+  test('Able to check if all ships sunk', () => {
+    expect(newGameBoard.sunk).toBe(true)
+  })
+
 })
 
-test('Check receiveAttack hits right boat, missedPositions work etc.', () => {
-  const ship3 = Ship(3, 3, 'Destroyer')
-  const board = Gameboard()
-  board.place([ship3, 3, 'vertical'])
-  board.receiveAttack(13)
-  board.receiveAttack(23)
-  board.receiveAttack(14)
-  board.receiveAttack(3)
-  expect(ship3.hitLocation).toEqual([13, 23, 3])
-  expect(board.missedPositions).toEqual([14])
-  expect(ship3.sunk).toEqual(true)
-  expect(board.ships[0].sunk).toEqual(true)
-  board.checkSunk(board)
-  expect(board.allSunk).toEqual(true)
-})
+// describe('Player factory tests', () => {
+//   const player = Player(computer)
+//   const newGameBoard3 = Gameboard(humanBoardData)
+//   player.computerChoice(newGameBoard3)
+//   player.computerChoice(newGameBoard3)
+//   player.computerChoice(newGameBoard3)
 
-test('Check player turn', () => {
-  const game = Game()
-  game.computerTurn()
-  expect(game.humanBoard.ships.length).toBe(5)
-  expect(game.computerHits.length).toBe(1)
-})
+//   test('Player hits array', () => {
+//     expect(player.hits.length).toBe(3)
+//   })
+
